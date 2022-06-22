@@ -5,5 +5,7 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
-    suspend fun login(email: String, password: String): Flow<Resource<FirebaseUser?>>
+    suspend fun login(email: String, password: String): Flow<Resource<Boolean>>
+    suspend fun register(email: String, password: String): Flow<Resource<Boolean>>
+    suspend fun logout(): Flow<Resource<Boolean>>
 }

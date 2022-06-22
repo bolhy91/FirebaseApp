@@ -1,6 +1,7 @@
 package com.bolhy91.firebaseapp.di
 
 import com.bolhy91.firebaseapp.data.repository.AuthRepositoryImpl
+import com.bolhy91.firebaseapp.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -22,7 +23,7 @@ object FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(auth: FirebaseAuth): AuthRepositoryImpl {
+    fun provideAuthRepository(auth: FirebaseAuth): AuthRepository {
         return AuthRepositoryImpl(auth)
     }
 }
