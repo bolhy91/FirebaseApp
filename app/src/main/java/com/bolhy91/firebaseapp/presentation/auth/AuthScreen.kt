@@ -1,5 +1,6 @@
 package com.bolhy91.firebaseapp.presentation.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -8,18 +9,22 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bolhy91.firebaseapp.R
+import com.bolhy91.firebaseapp.presentation.auth.register.RegisterViewModel
 import com.bolhy91.firebaseapp.ui.components.InputText
 import com.bolhy91.firebaseapp.ui.theme.FirebaseAppTheme
 import com.bolhy91.firebaseapp.ui.theme.blackColor
@@ -27,7 +32,14 @@ import com.bolhy91.firebaseapp.ui.theme.grayColor200
 import com.bolhy91.firebaseapp.ui.theme.primaryColor
 
 @Composable
-fun AuthScreen() {
+fun AuthScreen(
+    viewModel: RegisterViewModel = hiltViewModel()
+) {
+
+    val state = viewModel.state
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -47,9 +59,17 @@ fun AuthScreen() {
             )
         )
         Spacer(modifier = Modifier.height(20.dp))
-        InputText(placeholder = stringResource(id = R.string.text_email), onChangeText = {})
+        InputText(
+            placeholder = stringResource(id = R.string.text_email),
+            KeyboardType.Email,
+            email,
+            onChangeText = { email.value = it })
         Spacer(modifier = Modifier.height(10.dp))
-        InputText(placeholder = stringResource(id = R.string.text_password), onChangeText = {})
+        InputText(
+            placeholder = stringResource(id = R.string.text_password),
+            KeyboardType.Password,
+            password,
+            onChangeText = { password.value = it })
         Text(
             text = stringResource(id = R.string.text_forgot),
             style = TextStyle(
@@ -64,11 +84,14 @@ fun AuthScreen() {
         )
         Spacer(modifier = Modifier.height(20.dp))
         TextButton(
-            onClick = { /*TODO*/ },
+            onClick = {
+                viewModel.registerUser(email.value, password.value)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(8.dp))
-                .background(blackColor)
+                .background(blackColor),
+            enabled = viewModel.validateForm(email, password)
         ) {
             Text(
                 text = stringResource(id = R.string.button_login),
@@ -96,6 +119,10 @@ fun AuthScreen() {
                 }
             }
         }, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+    }
+
+    if (state.value.error != null && !state.value.isAuth) {
+        Toast.makeText(LocalContext.current, state.value.error, Toast.LENGTH_LONG).show()
     }
 }
 

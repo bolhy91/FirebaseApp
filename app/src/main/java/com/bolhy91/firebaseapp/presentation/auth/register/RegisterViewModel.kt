@@ -1,5 +1,6 @@
 package com.bolhy91.firebaseapp.presentation.auth.register
 
+import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -15,28 +16,48 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
+
+    val EMAIL_REGEX = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
+
     private val _state: MutableState<RegisterState> = mutableStateOf(RegisterState())
     val state: State<RegisterState> = _state
 
-    private fun registerUser(email: String, password: String) {
+    fun registerUser(email: String, password: String) {
         viewModelScope.launch {
             authRepository.register(email, password)
                 .collect { result ->
                     when (result) {
                         is Resource.Error -> {
-
+                            _state.value = _state.value.copy(
+                                error = result.message,
+                                isAuth = false,
+                                isLoading = false
+                            )
                         }
                         is Resource.Loading -> {
                             _state.value = _state.value.copy(
                                 isLoading = result.isLoading,
-                                error = null
+                                error = null,
                             )
                         }
                         is Resource.Success -> {
-
+                            result.data?.let {
+                                _state.value = _state.value.copy(
+                                    isAuth = result.data,
+                                    isLoading = false,
+                                    error = null
+                                )
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun validateForm(email: MutableState<String>, password: MutableState<String>): Boolean {
+        return if ((email.value.isEmpty() && !EMAIL_REGEX.toRegex().matches(email.value))
+        ) {
+            false
+        } else !(password.value.isEmpty() && password.value.length < 8)
     }
 }

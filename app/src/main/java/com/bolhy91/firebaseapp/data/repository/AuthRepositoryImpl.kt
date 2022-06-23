@@ -1,11 +1,10 @@
 package com.bolhy91.firebaseapp.data.repository
 
+import android.util.Log
 import com.bolhy91.firebaseapp.domain.repository.AuthRepository
 import com.bolhy91.firebaseapp.utils.Resource
 import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -23,6 +22,7 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(Resource.Loading(true))
                 firebaseAuth.signInWithEmailAndPassword(email, password).await()
                 val user = firebaseAuth.currentUser
+                Log.i("FirebaseUser", user?.email.toString())
                 emit(Resource.Success(user != null))
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -43,8 +43,9 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(Resource.Loading(isLoading = true))
                 firebaseAuth.createUserWithEmailAndPassword(email, password).await()
                 val user = firebaseAuth.currentUser
+                Log.i("FirebaseUser", user?.email.toString())
                 emit(Resource.Success(user != null))
-            } catch (e: Exception) {
+            } catch (e: FirebaseAuthInvalidCredentialsException) {
                 e.printStackTrace()
                 emit(Resource.Error(e.message ?: e.toString()))
             } catch (e: FirebaseAuthException) {
@@ -52,6 +53,9 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(Resource.Error(e.message ?: e.toString()))
 
             } catch (e: FirebaseException) {
+                e.printStackTrace()
+                emit(Resource.Error(e.message ?: e.toString()))
+            } catch (e: FirebaseAuthUserCollisionException) {
                 e.printStackTrace()
                 emit(Resource.Error(e.message ?: e.toString()))
             }
