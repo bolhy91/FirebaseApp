@@ -1,6 +1,5 @@
 package com.bolhy91.firebaseapp.presentation.auth.register
 
-import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bolhy91.firebaseapp.domain.repository.AuthRepository
 import com.bolhy91.firebaseapp.utils.Resource
+import com.bolhy91.firebaseapp.utils.UIScope
+import com.bolhy91.firebaseapp.utils.scope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,10 +18,12 @@ class RegisterViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    val EMAIL_REGEX = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
+    private val EMAIL_REGEX = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
 
     private val _state: MutableState<RegisterState> = mutableStateOf(RegisterState())
     val state: State<RegisterState> = _state
+
+    val uiScope = mutableStateOf<UIScope?>(null)
 
     fun registerUser(email: String, password: String) {
         viewModelScope.launch {
@@ -33,6 +36,9 @@ class RegisterViewModel @Inject constructor(
                                 isAuth = false,
                                 isLoading = false
                             )
+                            uiScope.scope {
+                                it.toaster?.toast(result.message ?: "Error: Connection")
+                            }
                         }
                         is Resource.Loading -> {
                             _state.value = _state.value.copy(

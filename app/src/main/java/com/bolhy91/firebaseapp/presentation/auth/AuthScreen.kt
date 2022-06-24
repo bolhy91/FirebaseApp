@@ -1,6 +1,5 @@
 package com.bolhy91.firebaseapp.presentation.auth
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +29,9 @@ import com.bolhy91.firebaseapp.ui.theme.FirebaseAppTheme
 import com.bolhy91.firebaseapp.ui.theme.blackColor
 import com.bolhy91.firebaseapp.ui.theme.grayColor200
 import com.bolhy91.firebaseapp.ui.theme.primaryColor
+import com.bolhy91.firebaseapp.utils.ScopeManager
+import com.bolhy91.firebaseapp.utils.Toaster
+import com.bolhy91.firebaseapp.utils.forward
 
 @Composable
 fun AuthScreen(
@@ -39,6 +41,15 @@ fun AuthScreen(
     val state = viewModel.state
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = viewModel.uiScope.value) {
+        viewModel.uiScope.forward(
+            ScopeManager(
+                toaster = Toaster(context)
+            )
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -119,10 +130,6 @@ fun AuthScreen(
                 }
             }
         }, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-    }
-
-    if (state.value.error != null && !state.value.isAuth) {
-        Toast.makeText(LocalContext.current, state.value.error, Toast.LENGTH_LONG).show()
     }
 }
 
