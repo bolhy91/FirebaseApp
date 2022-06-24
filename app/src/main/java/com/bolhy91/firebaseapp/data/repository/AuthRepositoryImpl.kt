@@ -81,4 +81,12 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun isAuthenticatedInFirebase(): Boolean {
+        return firebaseAuth.currentUser != null
+    }
+
+    override fun getCurrentUser(): FirebaseUser? {
+        return firebaseAuth.currentUser
+    }
 }

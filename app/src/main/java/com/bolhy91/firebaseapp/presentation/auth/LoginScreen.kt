@@ -1,6 +1,7 @@
 package com.bolhy91.firebaseapp.presentation.auth
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bolhy91.firebaseapp.R
-import com.bolhy91.firebaseapp.presentation.auth.register.RegisterViewModel
 import com.bolhy91.firebaseapp.ui.components.InputText
 import com.bolhy91.firebaseapp.ui.theme.FirebaseAppTheme
 import com.bolhy91.firebaseapp.ui.theme.blackColor
@@ -34,8 +34,10 @@ import com.bolhy91.firebaseapp.utils.Toaster
 import com.bolhy91.firebaseapp.utils.forward
 
 @Composable
-fun AuthScreen(
-    viewModel: RegisterViewModel = hiltViewModel()
+fun LoginScreen(
+    viewModel: AuthViewModel = hiltViewModel(),
+    onHomeNav: () -> Unit,
+    onRegisterNav: () -> Unit
 ) {
 
     val state = viewModel.state
@@ -50,7 +52,6 @@ fun AuthScreen(
             )
         )
     }
-
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -96,7 +97,10 @@ fun AuthScreen(
         Spacer(modifier = Modifier.height(20.dp))
         TextButton(
             onClick = {
-                viewModel.registerUser(email.value, password.value)
+                viewModel.loginUser(email.value, password.value)
+                if (state.value.isAuth) {
+                    onHomeNav()
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -114,35 +118,27 @@ fun AuthScreen(
             )
         }
         Spacer(modifier = Modifier.height(15.dp))
-        Text(buildAnnotatedString {
-            withStyle(style = ParagraphStyle(lineHeight = 25.sp)) {
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Normal, fontSize = 14.sp)) {
-                    append(stringResource(id = R.string.text_register_not_account))
+        Text(
+            buildAnnotatedString {
+                withStyle(style = ParagraphStyle(lineHeight = 25.sp)) {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Normal, fontSize = 14.sp)) {
+                        append(stringResource(id = R.string.text_register_not_account))
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 16.sp,
+                            color = primaryColor
+                        ),
+                    ) {
+                        append(stringResource(id = R.string.button_register))
+                    }
                 }
-                withStyle(
-                    style = SpanStyle(
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 16.sp,
-                        color = primaryColor
-                    )
-                ) {
-                    append(stringResource(id = R.string.button_register))
-                }
-            }
-        }, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-    }
-}
-
-@Preview
-@Composable
-fun AuthScreenPreview() {
-    FirebaseAppTheme {
-        Surface(
+            },
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-        ) {
-            AuthScreen()
-        }
+                .fillMaxWidth()
+                .clickable { onRegisterNav() },
+            textAlign = TextAlign.Center
+        )
     }
 }

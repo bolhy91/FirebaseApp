@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">Firebase</string>
     <string name="welcome">Welcome back! Glad to see you, Again!</string>
+    <string name="register">Hello! Register to get Started</string>
     <string name="text_email">Enter your email</string>
     <string name="text_password">Enter your password</string>
     <string name="text_forgot">Forgot Password?</string>
     <string name="text_register_not_account">Don\'t have an account?</string>
+    <string name="text_already_account">Already have an account?</string>
     <string name="button_register">Register Now</string>
     <string name="button_login">Login</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.bolhy91.firebaseapp.presentation.auth.register
+package com.bolhy91.firebaseapp.presentation.auth
 
 data class RegisterState(
     val isAuth: Boolean = false,

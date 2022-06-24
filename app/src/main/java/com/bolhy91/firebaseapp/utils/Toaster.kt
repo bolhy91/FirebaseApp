@@ -3,6 +3,7 @@ package com.bolhy91.firebaseapp.utils
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
+import androidx.navigation.NavHostController
 
 data class Toaster(private val context: Context) {
 
