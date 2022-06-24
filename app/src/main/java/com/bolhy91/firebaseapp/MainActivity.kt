@@ -85,6 +85,8 @@ fun NavGraphBuilder.registerNav(navHostController: NavHostController) {
 
 fun NavGraphBuilder.homeNav(navHostController: NavHostController) {
     composable(Destination.Home.route) {
-        HomeScreen()
+        HomeScreen(onLogin = {
+            navHostController.navigate(Destination.LoginNav.route)
+        })
     }
 }

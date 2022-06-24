@@ -66,7 +66,8 @@ class AuthRepositoryImpl @Inject constructor(
         return flow {
             try {
                 emit(Resource.Loading(isLoading = true))
-                firebaseAuth.currentUser?.delete()?.await()
+                //firebaseAuth.currentUser?.delete()?.await()
+                firebaseAuth.signOut()
                 emit(Resource.Success(true))
             } catch (e: Exception) {
                 e.printStackTrace()
