@@ -43,10 +43,36 @@ constructor(
     }
 
     override suspend fun getTask(): Flow<Resource<List<Task>>> {
-        TODO("Not yet implemented")
+        return flow {
+            emit(Resource.Loading(true))
+            val tasks: List<Task>
+            try {
+                tasks = taskRef.get().await().documents.mapNotNull { snapshot ->
+                    snapshot.toObject(Task::class.java)
+                }
+                emit(Resource.Success(data = tasks))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(Resource.Error(e.message ?: e.toString()))
+            } catch (e: FirebaseFirestoreException) {
+                e.printStackTrace()
+                emit(Resource.Error(e.message ?: e.toString()))
+            }
+        }
     }
 
-    override suspend fun removeTask(): Flow<Resource<Void?>> {
-        TODO("Not yet implemented")
+    override suspend fun removeTask(taskId: String): Flow<Resource<Void?>> = flow {
+        try {
+            emit(Resource.Loading(true))
+            val delete = taskRef.document(taskId).delete().await()
+            Log.i("DELETE TASK: ", delete.toString())
+            emit(Resource.Success(delete))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(Resource.Error(e.message ?: e.toString()))
+        } catch (e: FirebaseFirestoreException) {
+            e.printStackTrace()
+            emit(Resource.Error(e.message ?: e.toString()))
+        }
     }
 }

@@ -26,7 +26,7 @@ import com.bolhy91.firebaseapp.ui.theme.inputColor
 @Composable
 fun InputText(
     placeholder: String,
-    keyboardType: KeyboardType,
+    keyboardType: KeyboardType = KeyboardType.Text,
     valueText: MutableState<String>,
     onChangeText: (String) -> Unit
 ) {

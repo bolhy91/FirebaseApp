@@ -12,5 +12,5 @@ interface FirestoreRepository {
     ): Flow<Resource<Void?>>
 
     suspend fun getTask(): Flow<Resource<List<Task>>>
-    suspend fun removeTask(): Flow<Resource<Void?>>
+    suspend fun removeTask(taskId: String): Flow<Resource<Void?>>
 }
