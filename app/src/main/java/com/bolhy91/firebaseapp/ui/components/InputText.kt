@@ -38,6 +38,7 @@ fun InputText(
             onChangeText(valueText.value)
             isError = valueText.value.isEmpty() || valueText.value.isBlank()
         },
+        textStyle = TextStyle(fontSize = 18.sp),
         modifier = Modifier
             .fillMaxWidth()
             .background(inputColor),

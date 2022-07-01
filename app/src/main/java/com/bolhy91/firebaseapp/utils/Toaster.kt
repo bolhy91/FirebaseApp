@@ -15,7 +15,8 @@ data class Toaster(private val context: Context) {
 typealias UIScope = suspend (ScopeManager) -> Unit
 
 data class ScopeManager(
-    val toaster: Toaster? = null
+    val toaster: Toaster? = null,
+    val navHostController: NavHostController? = null
 )
 
 fun MutableState<UIScope?>.scope(block: UIScope?) {

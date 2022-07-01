@@ -17,6 +17,7 @@ import com.bolhy91.firebaseapp.presentation.HomeScreen
 import com.bolhy91.firebaseapp.presentation.auth.AuthViewModel
 import com.bolhy91.firebaseapp.presentation.auth.LoginScreen
 import com.bolhy91.firebaseapp.presentation.auth.RegisterScreen
+import com.bolhy91.firebaseapp.presentation.task.AddTaskScreen
 import com.bolhy91.firebaseapp.ui.theme.FirebaseAppTheme
 import com.bolhy91.firebaseapp.utils.Destination
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
                         loginNav(navHostController)
                         registerNav(navHostController)
                         homeNav(navHostController)
+                        addTaskNav(navHostController)
                     }
                     checkAuthStatus()
                 }
@@ -60,12 +62,7 @@ class MainActivity : ComponentActivity() {
 fun NavGraphBuilder.loginNav(navHostController: NavHostController) {
     composable(Destination.LoginNav.route) {
         LoginScreen(
-            onHomeNav = {
-                navHostController.navigate(Destination.Home.route)
-            },
-            onRegisterNav = {
-                navHostController.navigate(Destination.RegisterNav.route)
-            }
+            navHostController = navHostController
         )
     }
 }
@@ -73,12 +70,7 @@ fun NavGraphBuilder.loginNav(navHostController: NavHostController) {
 fun NavGraphBuilder.registerNav(navHostController: NavHostController) {
     composable(Destination.RegisterNav.route) {
         RegisterScreen(
-            onHomeNav = {
-                navHostController.navigate(Destination.Home.route)
-            },
-            onLoginNav = {
-                navHostController.navigate(Destination.LoginNav.route)
-            }
+            navHostController = navHostController
         )
     }
 }
@@ -87,6 +79,16 @@ fun NavGraphBuilder.homeNav(navHostController: NavHostController) {
     composable(Destination.Home.route) {
         HomeScreen(onLogin = {
             navHostController.navigate(Destination.LoginNav.route)
+        }, onAddTask = {
+            navHostController.navigate(Destination.AddTask.route)
         })
+    }
+}
+
+fun NavGraphBuilder.addTaskNav(navHostController: NavHostController) {
+    composable(Destination.AddTask.route) {
+        AddTaskScreen {
+            navHostController.navigate(Destination.Home.route)
+        }
     }
 }

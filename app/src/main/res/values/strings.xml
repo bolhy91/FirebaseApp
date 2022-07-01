@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Firebase</string>
+    <string name="app_name">FirebaseApp</string>
     <string name="welcome">Welcome back! Glad to see you, Again!</string>
     <string name="register">Hello! Register to get Started</string>
     <string name="text_email">Enter your email</string>

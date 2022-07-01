@@ -23,21 +23,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.bolhy91.firebaseapp.R
 import com.bolhy91.firebaseapp.ui.components.InputText
 import com.bolhy91.firebaseapp.ui.theme.FirebaseAppTheme
 import com.bolhy91.firebaseapp.ui.theme.blackColor
 import com.bolhy91.firebaseapp.ui.theme.grayColor200
 import com.bolhy91.firebaseapp.ui.theme.primaryColor
+import com.bolhy91.firebaseapp.utils.Destination
 import com.bolhy91.firebaseapp.utils.ScopeManager
 import com.bolhy91.firebaseapp.utils.Toaster
 import com.bolhy91.firebaseapp.utils.forward
 
 @Composable
 fun LoginScreen(
+    navHostController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel(),
-    onHomeNav: () -> Unit,
-    onRegisterNav: () -> Unit
 ) {
 
     val state = viewModel.state
@@ -48,7 +49,8 @@ fun LoginScreen(
     LaunchedEffect(key1 = viewModel.uiScope.value) {
         viewModel.uiScope.forward(
             ScopeManager(
-                toaster = Toaster(context)
+                toaster = Toaster(context),
+                navHostController = navHostController
             )
         )
     }
@@ -98,9 +100,6 @@ fun LoginScreen(
         TextButton(
             onClick = {
                 viewModel.loginUser(email.value, password.value)
-                if (state.value.isAuth) {
-                    onHomeNav()
-                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -137,7 +136,9 @@ fun LoginScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onRegisterNav() },
+                .clickable {
+                    navHostController.navigate(Destination.RegisterNav.route)
+                },
             textAlign = TextAlign.Center
         )
     }

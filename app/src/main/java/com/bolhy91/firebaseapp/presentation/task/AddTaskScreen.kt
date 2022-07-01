@@ -1,5 +1,6 @@
 package com.bolhy91.firebaseapp.presentation.task
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +29,7 @@ fun AddTaskScreen(
 
     val title = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -41,7 +44,13 @@ fun AddTaskScreen(
             valueText = description,
             onChangeText = { description.value = it })
         TextButton(
-            onClick = { /*TODO*/ },
+            onClick = {
+                if (!validationForm(title.value, description.value)) {
+                    Toast.makeText(context, "Required fields", Toast.LENGTH_LONG)
+                        .show()
+                }
+            },
+            enabled = validationForm(title.value, description.value),
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colors.secondary)
@@ -70,6 +79,10 @@ fun TopBar(onBackHome: () -> Unit) {
     }
 }
 
+fun validationForm(title: String, description: String): Boolean {
+    return title.isNotEmpty() && description.isNotEmpty()
+}
+
 @Preview
 @Composable
 fun AddTaskScreenPreview() {
@@ -78,7 +91,7 @@ fun AddTaskScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-         //   AddTaskScreen(v)
+            //   AddTaskScreen(v)
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bolhy91.firebaseapp.domain.repository.AuthRepository
+import com.bolhy91.firebaseapp.utils.Destination
 import com.bolhy91.firebaseapp.utils.Resource
 import com.bolhy91.firebaseapp.utils.UIScope
 import com.bolhy91.firebaseapp.utils.scope
@@ -60,6 +61,11 @@ class AuthViewModel @Inject constructor(
                                     error = null
                                 )
                             }
+                            withContext(Dispatchers.Main){
+                                uiScope.scope {
+                                    it.navHostController?.navigate(Destination.Home.route)
+                                }
+                            }
                         }
                     }
                 }
@@ -95,6 +101,11 @@ class AuthViewModel @Inject constructor(
                                 isLoading = false,
                                 error = null
                             )
+                        }
+                        withContext(Dispatchers.Main){
+                            uiScope.scope {
+                                it.navHostController?.navigate(Destination.Home.route)
+                            }
                         }
                     }
                 }

@@ -20,4 +20,5 @@ sealed class Destination(
 //        )
 //    )
     object Home: Destination("home", emptyList())
+    object AddTask: Destination(route = "addTask", emptyList())
 }

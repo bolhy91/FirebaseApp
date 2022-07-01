@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,7 +23,8 @@ import com.bolhy91.firebaseapp.utils.forward
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    onLogin: () -> Unit
+    onLogin: () -> Unit,
+    onAddTask: () -> Unit
 ) {
     val currentUser = viewModel.currentUser
     val context = LocalContext.current
@@ -66,7 +68,7 @@ fun HomeScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 text = { Text(text = "Add") },
-                onClick = { /*TODO*/ },
+                onClick = { onAddTask() },
                 elevation = FloatingActionButtonDefaults.elevation(8.dp),
                 icon = {
                     Icon(
@@ -75,9 +77,18 @@ fun HomeScreen(
                     )
                 })
         },
-    ) { paddingValues ->
+    ) {
         Column {
-            currentUser.value?.email?.let { Text(text = it) }
+            currentUser.value?.email?.let {
+                Text(
+                    text = "Authenticated user: $it",
+                    modifier = Modifier
+                        .padding(16.dp),
+                    style = MaterialTheme.typography.body1,
+                    fontWeight = FontWeight.Bold,
+                    softWrap = true
+                )
+            }
         }
     }
 }
@@ -90,7 +101,7 @@ fun HomeScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            HomeScreen(){}
+            HomeScreen(onLogin = {}, onAddTask = {})
         }
     }
 }
