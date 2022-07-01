@@ -1,5 +1,6 @@
 package com.bolhy91.firebaseapp.presentation.task
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,21 +13,21 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bolhy91.firebaseapp.presentation.HomeViewModel
 import com.bolhy91.firebaseapp.ui.components.InputText
 import com.bolhy91.firebaseapp.ui.theme.FirebaseAppTheme
+import com.bolhy91.firebaseapp.utils.Response
 
 @Composable
 fun AddTaskScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: TaskViewModel = hiltViewModel(),
     onBackHome: () -> Unit,
 ) {
-
     val title = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -48,6 +49,8 @@ fun AddTaskScreen(
                 if (!validationForm(title.value, description.value)) {
                     Toast.makeText(context, "Required fields", Toast.LENGTH_LONG)
                         .show()
+                } else {
+                    viewModel.addTask(title.value, description.value)
                 }
             },
             enabled = validationForm(title.value, description.value),
@@ -57,8 +60,22 @@ fun AddTaskScreen(
         ) {
             Text(text = "Add Task")
         }
+        Spacer(modifier = Modifier.height(10.dp))
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            when (val addTaskResponse = viewModel.isTaskAddedState.value) {
+                is Response.Error -> {
+                    Log.i("ADDTASK: ", addTaskResponse.message)
+                    Toast.makeText(context, addTaskResponse.message, Toast.LENGTH_LONG).show()
+                }
+                is Response.Loading -> CircularProgressIndicator()
+                is Response.Success -> {
+                    Log.i("ADDTASK SUCCESS: ", addTaskResponse.data.toString())
+                }
+            }
+        }
     }
 }
+
 
 @Composable
 fun TopBar(onBackHome: () -> Unit) {

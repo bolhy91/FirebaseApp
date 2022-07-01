@@ -1,7 +1,7 @@
 package com.bolhy91.firebaseapp.domain.repository
 
 import com.bolhy91.firebaseapp.domain.model.Task
-import com.bolhy91.firebaseapp.utils.Resource
+import com.bolhy91.firebaseapp.utils.Response
 import kotlinx.coroutines.flow.Flow
 
 interface FirestoreRepository {
@@ -9,8 +9,8 @@ interface FirestoreRepository {
         title: String,
         description: String,
         isCheck: Boolean = false
-    ): Flow<Resource<Void?>>
+    ): Flow<Response<Void?>>
 
-    suspend fun getTask(): Flow<Resource<List<Task>>>
-    suspend fun removeTask(taskId: String): Flow<Resource<Void?>>
+    suspend fun getTask(): Flow<Response<List<Task>>>
+    suspend fun removeTask(taskId: String): Flow<Response<Void?>>
 }
